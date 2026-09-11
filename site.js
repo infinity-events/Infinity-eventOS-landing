@@ -116,3 +116,71 @@ if (canHover && !reducedMotion) {
     });
   });
 }
+
+const liveDemo = document.querySelector('[data-live-demo]');
+
+if (liveDemo && !reducedMotion) {
+  const steps = [...liveDemo.querySelectorAll('[data-demo-step]')];
+  const status = liveDemo.querySelector('[data-demo-status]');
+  const time = liveDemo.querySelector('[data-demo-time]');
+  const attendees = liveDemo.querySelector('[data-demo-attendees]');
+  const wallet = liveDemo.querySelector('[data-demo-wallet]');
+  const walletChange = liveDemo.querySelector('[data-demo-wallet-change]');
+  const action = liveDemo.querySelector('[data-demo-action]');
+  const toast = liveDemo.querySelector('[data-demo-toast]');
+  const toastTitle = liveDemo.querySelector('[data-demo-toast-title]');
+  const toastCopy = liveDemo.querySelector('[data-demo-toast-copy]');
+  const progress = liveDemo.querySelector('[data-demo-progress]');
+  const bars = [...liveDemo.querySelectorAll('.demo-bars i')];
+  const states = [
+    { status: 'Ticket in attesa', action: 'In attesa di scansione', title: 'Ticket pronto', copy: 'Il prossimo ingresso è pronto', attendee: '3.842', wallet: '€ 0', walletChange: 'In attesa' },
+    { status: 'QR validato', action: 'Ingresso autorizzato', title: 'Accesso registrato', copy: 'Alessia è appena entrata', attendee: '3.843', wallet: '€ 0', walletChange: 'Wallet da attivare' },
+    { status: 'Braccialetto attivato', action: 'Profilo associato', title: 'Braccialetto attivo', copy: 'Profilo cashless sincronizzato', attendee: '3.843', wallet: '€ 0', walletChange: 'Pronto all’uso' },
+    { status: 'Primo acquisto', action: 'Transazione completata', title: 'Wallet aggiornato', copy: 'Pagamento cashless confermato', attendee: '3.843', wallet: '€ 25', walletChange: '+€ 25 oggi' },
+  ];
+  let currentStep = 0;
+  let timer;
+  let demoVisible = false;
+
+  const renderDemo = (step) => {
+    const state = states[step];
+    steps.forEach((item, index) => item.classList.toggle('is-active', index <= step));
+    if (status) status.textContent = state.status;
+    if (time) time.textContent = `21:4${2 + step}`;
+    if (attendees) attendees.textContent = state.attendee;
+    if (wallet) wallet.textContent = state.wallet;
+    if (walletChange) walletChange.textContent = state.walletChange;
+    if (action) action.textContent = state.action;
+    if (toastTitle) toastTitle.textContent = state.title;
+    if (toastCopy) toastCopy.textContent = state.copy;
+    if (toast) {
+      toast.classList.remove('is-visible');
+      requestAnimationFrame(() => toast.classList.add('is-visible'));
+    }
+    if (progress) progress.style.width = `${((step + 1) / states.length) * 100}%`;
+    bars.forEach((bar, index) => bar.classList.toggle('is-growing', index >= 8 - step && index < 9 + step));
+  };
+
+  const nextDemoStep = () => {
+    currentStep = (currentStep + 1) % states.length;
+    renderDemo(currentStep);
+  };
+
+  const startDemo = () => {
+    if (timer || !demoVisible) return;
+    renderDemo(currentStep);
+    timer = window.setInterval(nextDemoStep, 2700);
+  };
+
+  const stopDemo = () => {
+    window.clearInterval(timer);
+    timer = undefined;
+  };
+
+  const demoObserver = new IntersectionObserver(([entry]) => {
+    demoVisible = entry.isIntersecting;
+    if (demoVisible) startDemo();
+    else stopDemo();
+  }, { threshold: 0.25 });
+  demoObserver.observe(liveDemo);
+}
