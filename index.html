@@ -90,22 +90,33 @@
           <p>Un singolo partecipante attraversa il flusso completo: dal ticket al primo acquisto, mentre la control room si aggiorna in tempo reale.</p>
         </div>
         <div class="live-demo-panel" data-live-demo>
-          <div class="live-demo-topbar"><span class="live-label"><i></i> SIMULAZIONE LIVE</span><span class="demo-clock">21:42:08</span></div>
-          <div class="live-demo-body">
-            <div class="demo-timeline" aria-label="Stato del partecipante">
-              <div class="demo-person"><span class="demo-avatar">AV</span><div><strong>Alessia Verdi</strong><small>Festival Pass · #VF-2841</small></div></div>
-              <div class="demo-steps">
-                <div class="demo-step is-active" data-demo-step="0"><span>01</span><div><strong>Ticket acquistato</strong><small>Il partecipante è pronto</small></div></div>
-                <div class="demo-step" data-demo-step="1"><span>02</span><div><strong>QR validato</strong><small>Ingresso autorizzato</small></div></div>
-                <div class="demo-step" data-demo-step="2"><span>03</span><div><strong>Braccialetto attivato</strong><small>Profilo associato</small></div></div>
-                <div class="demo-step" data-demo-step="3"><span>04</span><div><strong>Primo acquisto</strong><small>Wallet aggiornato</small></div></div>
-              </div>
+          <div class="live-demo-topbar"><span class="live-label"><i></i> DEMO INGRESSO QR</span><span class="demo-clock">21:42:08</span></div>
+          <div class="scanner-demo-body">
+            <div class="ticket-preview">
+              <div class="ticket-top"><span class="ticket-brand">INFINITY <em>EVENTOS</em></span><span class="ticket-type">FESTIVAL PASS</span></div>
+              <div class="ticket-event"><strong>Vivid Nights</strong><small>Roma · 24 agosto 2026</small></div>
+              <div class="ticket-qr-wrap"><div class="ticket-qr" data-demo-qr aria-label="QR code del ticket"></div><span class="qr-corner qr-corner-tl"></span><span class="qr-corner qr-corner-tr"></span><span class="qr-corner qr-corner-bl"></span><span class="qr-corner qr-corner-br"></span></div>
+              <div class="ticket-code"><small>CODICE TICKET</small><strong>VF-2026-AL4X9K</strong></div>
+              <div class="ticket-footer"><span>Alessia Verdi</span><span>VIP · € 49,00</span></div>
             </div>
-            <div class="demo-dashboard">
-              <div class="demo-status"><span class="status-dot"></span><span data-demo-status>Ticket in attesa</span><b data-demo-time>21:42</b></div>
-              <div class="demo-metrics"><div><small>Presenze live</small><strong data-demo-attendees>3.842</strong><span>+1 ora</span></div><div><small>Wallet Alessia</small><strong data-demo-wallet>€ 0</strong><span data-demo-wallet-change>In attesa</span></div></div>
-              <div class="demo-chart"><div class="demo-chart-head"><small>Attività evento</small><span data-demo-action>In attesa di scansione</span></div><div class="demo-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-              <div class="demo-toast" data-demo-toast><span>✓</span><div><strong data-demo-toast-title>Ticket pronto</strong><small data-demo-toast-copy>In attesa del prossimo evento</small></div></div>
+            <div class="phone-stage">
+              <div class="phone-shadow"></div>
+              <div class="demo-phone" data-demo-phone>
+                <div class="phone-speaker"></div><div class="phone-screen">
+                  <div class="phone-status"><span>21:42</span><span>● ◒ ▰</span></div>
+                  <div class="camera-header"><span>‹</span><strong>Scansiona QR</strong><span>?</span></div>
+                  <div class="camera-view"><div class="camera-noise"></div><div class="scan-frame"><i></i><i></i><i></i><i></i><b data-scan-line></b></div><span class="camera-hint" data-camera-hint>Inquadra il QR del ticket</span></div>
+                  <div class="camera-bottom"><span>Galleria</span><div class="shutter"></div><span>Flash</span></div>
+                  <div class="scan-result" data-scan-result><span>✓</span><div><strong data-scan-title>QR riconosciuto</strong><small data-scan-copy>Verifica in corso...</small></div></div>
+                </div>
+              </div>
+              <div class="phone-caption"><span class="status-dot"></span><span data-camera-status>La fotocamera sta cercando un QR</span></div>
+            </div>
+            <div class="scan-dashboard">
+              <div class="scan-dashboard-head"><div><span class="feature-kicker">CONTROL ROOM</span><h3>Ingresso QR</h3></div><span class="scan-live"><i></i> LIVE</span></div>
+              <div class="scan-state" data-scan-state><span class="scan-state-icon">⌁</span><div><small>STATO OPERATIVO</small><strong data-state-title>In attesa della scansione</strong><span data-state-copy>Il ticket apparirà qui appena letto</span></div></div>
+              <div class="scan-data"><div><small>Partecipante</small><strong data-scan-person>—</strong></div><div><small>Ticket</small><strong data-scan-ticket>—</strong></div><div><small>Metodo</small><strong>QR CODE</strong></div><div><small>Ingresso</small><strong data-scan-entrance>—</strong></div></div>
+              <div class="scan-log"><span>ULTIMA ATTIVITÀ</span><strong data-scan-log>In attesa di un nuovo evento</strong><small data-scan-log-time>—</small></div>
             </div>
           </div>
           <div class="demo-progress"><span data-demo-progress></span></div>

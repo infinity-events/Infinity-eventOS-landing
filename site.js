@@ -119,57 +119,89 @@ if (canHover && !reducedMotion) {
 
 const liveDemo = document.querySelector('[data-live-demo]');
 
-if (liveDemo && !reducedMotion) {
-  const steps = [...liveDemo.querySelectorAll('[data-demo-step]')];
-  const status = liveDemo.querySelector('[data-demo-status]');
-  const time = liveDemo.querySelector('[data-demo-time]');
-  const attendees = liveDemo.querySelector('[data-demo-attendees]');
-  const wallet = liveDemo.querySelector('[data-demo-wallet]');
-  const walletChange = liveDemo.querySelector('[data-demo-wallet-change]');
-  const action = liveDemo.querySelector('[data-demo-action]');
-  const toast = liveDemo.querySelector('[data-demo-toast]');
-  const toastTitle = liveDemo.querySelector('[data-demo-toast-title]');
-  const toastCopy = liveDemo.querySelector('[data-demo-toast-copy]');
+if (liveDemo) {
+  const qr = liveDemo.querySelector('[data-demo-qr]');
+  const phone = liveDemo.querySelector('[data-demo-phone]');
+  const scanResult = liveDemo.querySelector('[data-scan-result]');
+  const scanLine = liveDemo.querySelector('[data-scan-line]');
+  const cameraHint = liveDemo.querySelector('[data-camera-hint]');
+  const cameraStatus = liveDemo.querySelector('[data-camera-status]');
+  const scanState = liveDemo.querySelector('[data-scan-state]');
+  const stateTitle = liveDemo.querySelector('[data-state-title]');
+  const stateCopy = liveDemo.querySelector('[data-state-copy]');
+  const scanTitle = liveDemo.querySelector('[data-scan-title]');
+  const scanCopy = liveDemo.querySelector('[data-scan-copy]');
+  const person = liveDemo.querySelector('[data-scan-person]');
+  const ticket = liveDemo.querySelector('[data-scan-ticket]');
+  const entrance = liveDemo.querySelector('[data-scan-entrance]');
+  const log = liveDemo.querySelector('[data-scan-log]');
+  const logTime = liveDemo.querySelector('[data-scan-log-time]');
   const progress = liveDemo.querySelector('[data-demo-progress]');
-  const bars = [...liveDemo.querySelectorAll('.demo-bars i')];
   const states = [
-    { status: 'Ticket in attesa', action: 'In attesa di scansione', title: 'Ticket pronto', copy: 'Il prossimo ingresso è pronto', attendee: '3.842', wallet: '€ 0', walletChange: 'In attesa' },
-    { status: 'QR validato', action: 'Ingresso autorizzato', title: 'Accesso registrato', copy: 'Alessia è appena entrata', attendee: '3.843', wallet: '€ 0', walletChange: 'Wallet da attivare' },
-    { status: 'Braccialetto attivato', action: 'Profilo associato', title: 'Braccialetto attivo', copy: 'Profilo cashless sincronizzato', attendee: '3.843', wallet: '€ 0', walletChange: 'Pronto all’uso' },
-    { status: 'Primo acquisto', action: 'Transazione completata', title: 'Wallet aggiornato', copy: 'Pagamento cashless confermato', attendee: '3.843', wallet: '€ 25', walletChange: '+€ 25 oggi' },
+    { hint: 'Inquadra il QR del ticket', camera: 'La fotocamera sta cercando un QR', title: 'In attesa della scansione', copy: 'Il ticket apparirà qui appena letto', result: 'QR pronto', resultCopy: 'Inquadra il codice per continuare', person: '—', ticket: '—', entrance: '—', log: 'In attesa di un nuovo evento', time: '—' },
+    { hint: 'QR rilevato', camera: 'QR riconosciuto · VF-2026-AL4X9K', title: 'QR rilevato', copy: 'Codice letto dalla fotocamera', result: 'QR riconosciuto', resultCopy: 'VF-2026-AL4X9K', person: 'Alessia Verdi', ticket: 'VF-2026-AL4X9K', entrance: 'Verifica…', log: 'Lettura QR ricevuta', time: '21:42:10' },
+    { hint: 'Verifica ticket…', camera: 'Controllo validità in corso', title: 'Verifica ticket', copy: 'Controllo festival, stato e ingresso', result: 'Controllo in corso', resultCopy: 'Verifica con Infinity EventOS…', person: 'Alessia Verdi', ticket: 'VF-2026-AL4X9K', entrance: 'Verifica…', log: 'Validazione ticket in corso', time: '21:42:11' },
+    { hint: 'Ticket valido', camera: 'Ticket valido · accesso consentito', title: 'Accesso consentito', copy: 'Ingresso registrato nel festival', result: 'Ticket valido', resultCopy: 'Accesso consentito', person: 'Alessia Verdi', ticket: 'VF-2026-AL4X9K', entrance: 'Consentito', log: 'Ingresso QR registrato', time: '21:42:12' },
+    { hint: 'Ticket registrato', camera: 'Scansione completata', title: 'Partecipante registrato', copy: 'La lista partecipanti è aggiornata', result: 'Ingresso registrato', resultCopy: 'Alessia è dentro all’evento', person: 'Alessia Verdi', ticket: 'VF-2026-AL4X9K', entrance: 'Entrato', log: 'Alessia Verdi · QR · ENTRY', time: '21:42:12' },
   ];
+
+  const addQrCell = (filled) => {
+    const cell = document.createElement('span');
+    if (!filled) cell.className = 'is-empty';
+    qr?.appendChild(cell);
+  };
+
+  const buildQr = () => {
+    if (!qr || qr.children.length) return;
+    const size = 21;
+    const matrix = Array.from({ length: size }, () => Array(size).fill(null));
+    const finder = (row, column) => {
+      for (let y = -1; y < 8; y += 1) for (let x = -1; x < 8; x += 1) {
+        const r = row + y;
+        const c = column + x;
+        if (r < 0 || c < 0 || r >= size || c >= size) continue;
+        matrix[r][c] = y >= 0 && y < 7 && x >= 0 && x < 7 && (y === 0 || y === 6 || x === 0 || x === 6 || (y >= 2 && y <= 4 && x >= 2 && x <= 4));
+      }
+    };
+    finder(0, 0); finder(0, 14); finder(14, 0);
+    for (let row = 0; row < size; row += 1) for (let column = 0; column < size; column += 1) {
+      if (matrix[row][column] === null) matrix[row][column] = (row * 17 + column * 11 + row * column) % 7 < 3;
+      addQrCell(matrix[row][column]);
+    }
+  };
+
+  buildQr();
   let currentStep = 0;
   let timer;
   let demoVisible = false;
 
   const renderDemo = (step) => {
     const state = states[step];
-    steps.forEach((item, index) => item.classList.toggle('is-active', index <= step));
-    if (status) status.textContent = state.status;
-    if (time) time.textContent = `21:4${2 + step}`;
-    if (attendees) attendees.textContent = state.attendee;
-    if (wallet) wallet.textContent = state.wallet;
-    if (walletChange) walletChange.textContent = state.walletChange;
-    if (action) action.textContent = state.action;
-    if (toastTitle) toastTitle.textContent = state.title;
-    if (toastCopy) toastCopy.textContent = state.copy;
-    if (toast) {
-      toast.classList.remove('is-visible');
-      requestAnimationFrame(() => toast.classList.add('is-visible'));
-    }
+    phone?.classList.toggle('is-success', step >= 3);
+    scanResult?.classList.toggle('is-visible', step >= 1);
+    scanState?.classList.toggle('is-success', step >= 3);
+    if (scanLine) scanLine.style.opacity = step === 2 ? '1' : step >= 3 ? '.35' : '';
+    if (cameraHint) cameraHint.textContent = state.hint;
+    if (cameraStatus) cameraStatus.textContent = state.camera;
+    if (stateTitle) stateTitle.textContent = state.title;
+    if (stateCopy) stateCopy.textContent = state.copy;
+    if (scanTitle) scanTitle.textContent = state.result;
+    if (scanCopy) scanCopy.textContent = state.resultCopy;
+    if (person) person.textContent = state.person;
+    if (ticket) ticket.textContent = state.ticket;
+    if (entrance) entrance.textContent = state.entrance;
+    if (log) log.textContent = state.log;
+    if (logTime) logTime.textContent = state.time;
     if (progress) progress.style.width = `${((step + 1) / states.length) * 100}%`;
-    bars.forEach((bar, index) => bar.classList.toggle('is-growing', index >= 8 - step && index < 9 + step));
-  };
-
-  const nextDemoStep = () => {
-    currentStep = (currentStep + 1) % states.length;
-    renderDemo(currentStep);
   };
 
   const startDemo = () => {
     if (timer || !demoVisible) return;
     renderDemo(currentStep);
-    timer = window.setInterval(nextDemoStep, 2700);
+    if (!reducedMotion) timer = window.setInterval(() => {
+      currentStep = (currentStep + 1) % states.length;
+      renderDemo(currentStep);
+    }, 2300);
   };
 
   const stopDemo = () => {
